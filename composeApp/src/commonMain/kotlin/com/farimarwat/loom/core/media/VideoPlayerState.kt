@@ -1,4 +1,4 @@
-package com.farimarwat.loom.core
+package com.farimarwat.loom.core.media
 
 
 import androidx.compose.runtime.*
@@ -16,4 +16,4 @@ expect class VideoPlayerState {
 }
 
 @Composable
-expect fun rememberVideoPlayerState():VideoPlayerState
+expect fun rememberLoopVideoPlayerState(): VideoPlayerState

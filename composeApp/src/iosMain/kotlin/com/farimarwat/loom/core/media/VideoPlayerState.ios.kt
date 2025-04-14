@@ -1,4 +1,4 @@
-package com.farimarwat.loom.core
+package com.farimarwat.loom.core.media
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.*
@@ -14,7 +14,7 @@ import androidx.compose.runtime.*
 
 actual class VideoPlayerState {
 
-    private var player:AVPlayer? = null
+    var player:AVPlayer? = null
     private var timeObserver:Any? = null
     actual var isPlaying: Boolean = false
     actual var progress: Float = 0F
@@ -34,6 +34,7 @@ actual class VideoPlayerState {
                     currentPosition = (CMTimeGetSeconds(time)*100).toLong()
                 }
             }
+            player?.play()
         }
     }
 
@@ -51,12 +52,18 @@ actual class VideoPlayerState {
     }
 
     actual fun release() {
-        (timeObserver as? NSObject)?.let { observer ->
-            player?.removeTimeObserver(observer)
+        if (timeObserver != null) {
+            (timeObserver as? NSObject)?.let { observer ->
+                try {
+                    player?.removeTimeObserver(observer)
+                    player?.currentItem?.removeObserver(observer, "duration")
+                } catch (_: Exception) {
+                    // Safely ignore if already removed or invalid
+                }
+            }
+            timeObserver = null
         }
-        (timeObserver as NSObject).let { observer ->
-            player?.currentItem?.removeObserver(observer, "duration")
-        }
+
         player?.replaceCurrentItemWithPlayerItem(null)
         player = null
         isPlaying = false
@@ -65,11 +72,12 @@ actual class VideoPlayerState {
         currentPosition = 0L
     }
 
+
 }
 
 @Composable
-actual fun rememberVideoPlayerState(): VideoPlayerState {
-    return remember { VideoPlayerState() }.also {
+actual fun rememberLoopVideoPlayerState(): VideoPlayerState {
+    return remember { com.farimarwat.loom.core.media.VideoPlayerState() }.also {
         DisposableEffect(it) {
             onDispose { it.release() }
         }

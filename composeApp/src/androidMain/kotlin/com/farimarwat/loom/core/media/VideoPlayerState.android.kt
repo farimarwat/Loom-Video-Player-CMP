@@ -1,11 +1,9 @@
-package com.farimarwat.loom.core
+package com.farimarwat.loom.core.media
 
 import android.content.Context
-import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -15,7 +13,7 @@ actual class VideoPlayerState
     (
     private val context: Context
 ){
-    private val player = ExoPlayer.Builder(context).build()
+    val player = ExoPlayer.Builder(context).build()
     private var isMediaLoaded = false
 
     actual var isPlaying: Boolean = false
@@ -42,6 +40,7 @@ actual class VideoPlayerState
         isMediaLoaded = false
         player.setMediaItem(MediaItem.fromUri(url))
         player.prepare()
+        player.play()
     }
 
     actual fun togglePlay() {
@@ -58,9 +57,9 @@ actual class VideoPlayerState
 }
 
 @Composable
-actual fun rememberVideoPlayerState(): VideoPlayerState {
+actual fun rememberLoopVideoPlayerState(): VideoPlayerState {
     val context = LocalContext.current
-    return remember { VideoPlayerState(context) }.also {
+    return remember { com.farimarwat.loom.core.media.VideoPlayerState(context) }.also {
         DisposableEffect(it) {
             onDispose { it.release() }
         }
