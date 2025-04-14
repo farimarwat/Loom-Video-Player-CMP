@@ -5,3 +5,5 @@ import androidx.compose.ui.unit.DpSize
 
 @Composable
 expect fun getPlatformWindowSize(): DpSize
+
+expect fun Long.formatAsTime(): String

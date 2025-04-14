@@ -22,7 +22,6 @@ actual fun LoomVideoPlayer(
             .then(modifier)
     ){
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 PlayerView(context).apply {
                     player = playerState.player

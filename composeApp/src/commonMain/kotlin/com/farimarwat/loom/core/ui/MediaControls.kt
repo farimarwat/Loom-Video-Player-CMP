@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,14 +36,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.farimarwat.loom.core.media.VideoPlayerState
+import com.farimarwat.loom.utils.formatAsTime
 import com.farimarwat.loom.utils.getPlatformWindowSize
 import loomvideoplayer.composeapp.generated.resources.Res
 import loomvideoplayer.composeapp.generated.resources.ic_fullscreen
+import loomvideoplayer.composeapp.generated.resources.ic_pause
+import loomvideoplayer.composeapp.generated.resources.ic_play
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MediaControls(
-    state:VideoPlayerState
+    state: VideoPlayerState
 ) {
     var showControls by remember { mutableStateOf(true) }
     BoxWithConstraints(
@@ -51,40 +56,48 @@ fun MediaControls(
                 showControls = !showControls
             }
     ) {
-        val screen = getPlatformWindowSize()
-        var sliderPosition by remember { mutableStateOf(0f) }
+        var isSliderDragging by remember { mutableStateOf(false) }
+        var sliderPosition by remember { mutableStateOf(state.progress) }
+
+        // Update slider position when not dragging and player progresses
+        LaunchedEffect(state.progress) {
+            if (!isSliderDragging) {
+                sliderPosition = state.progress
+            }
+        }
+
         AnimatedVisibility(
             visible = showControls,
             enter = fadeIn(),
             exit = fadeOut()
-        ){
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-            ){
-                //Play Button
+            ) {
+                // Play Button
                 IconButton(
                     modifier = Modifier
-                        .size(screen.width.times(0.2f))
+                        .size(48.dp)
                         .align(Alignment.Center)
                         .clip(CircleShape)
-                        .background(Color.Black.copy(0.5f))
-                    ,
+                        .background(Color.Black.copy(0.5f)),
                     onClick = {
                         state.togglePlay()
                     }
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(screen.width.times(0.15f)),
-                        imageVector = Icons.Default.PlayArrow,
+                            .padding(8.dp)
+                            .fillMaxSize(),
+                        painter = painterResource(if (state.isPlaying) Res.drawable.ic_pause else Res.drawable.ic_play),
                         contentDescription = "Toggle Play",
                         tint = Color.White
                     )
                 }
 
-                //BottomBar
-                Row (
+                // BottomBar
+                Row(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
@@ -92,53 +105,64 @@ fun MediaControls(
                         .padding(horizontal = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ){
-
-                    //Time
-                    Row (
+                ) {
+                    // Time
+                    Row(
                         modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
                             .background(Color.White.copy(0.5f))
-                            .padding(vertical = 4.dp, horizontal = 8.dp)
-                        ,
+                            .padding(vertical = 4.dp, horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ){
-                        //Current Position
+                    ) {
+                        // Current Position
                         val textColor = Color.Black
                         Text(
-                            text = "0:22",
+                            text = state.currentPosition.formatAsTime(),
                             style = MaterialTheme.typography.labelMedium,
                             color = textColor
                         )
-                        //Total Duration
                         Text(
-                            text = "30:00",
+                            text = "/",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = textColor
+                        )
+                        // Total Duration
+                        Text(
+                            text = state.duration.formatAsTime(),
                             style = MaterialTheme.typography.labelMedium,
                             color = textColor
                         )
                     }
 
-
-                    //Slider
+                    // Slider
                     Slider(
                         value = sliderPosition,
-                        onValueChange = {sliderPosition = it},
-                        valueRange = 0f..100f,
-                        steps = 100,
+                        onValueChange = { newValue ->
+                            isSliderDragging = true
+                            sliderPosition = newValue
+                        },
+                        onValueChangeFinished = {
+                            isSliderDragging = false
+                            state.seekTo(sliderPosition)
+                        },
+                        valueRange = 0f..1f,
                         modifier = Modifier
                             .weight(1f)
                     )
+
+                    // Fullscreen Button
                     IconButton(
                         modifier = Modifier
-                            .size(screen.width.times(0.05f)),
+                            .size(24.dp),
                         onClick = {}
-                    ){
+                    ) {
                         Icon(
+                            modifier = Modifier.fillMaxSize(),
                             painter = painterResource(Res.drawable.ic_fullscreen),
                             contentDescription = "FullScreen",
                             tint = Color.White
                         )
                     }
-
                 }
             }
         }
