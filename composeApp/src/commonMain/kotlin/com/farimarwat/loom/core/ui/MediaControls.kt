@@ -56,14 +56,11 @@ fun MediaControls(
                 showControls = !showControls
             }
     ) {
-        var isSliderDragging by remember { mutableStateOf(false) }
         var sliderPosition by remember { mutableStateOf(state.progress) }
 
         // Update slider position when not dragging and player progresses
         LaunchedEffect(state.progress) {
-            if (!isSliderDragging) {
-                sliderPosition = state.progress
-            }
+            sliderPosition = state.progress
         }
 
         AnimatedVisibility(
@@ -138,11 +135,9 @@ fun MediaControls(
                     Slider(
                         value = sliderPosition,
                         onValueChange = { newValue ->
-                            isSliderDragging = true
                             sliderPosition = newValue
                         },
                         onValueChangeFinished = {
-                            isSliderDragging = false
                             state.seekTo(sliderPosition)
                         },
                         valueRange = 0f..1f,
