@@ -45,7 +45,6 @@ actual class VideoPlayerState
                 if (player.isPlaying) {
                     currentPosition = player.currentPosition
                     progress = if (duration > 0) currentPosition.toFloat() / duration else 0f
-                    println("Progress: ${progress}")
                 }
             }
         }
