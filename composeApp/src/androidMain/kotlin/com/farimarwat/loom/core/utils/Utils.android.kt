@@ -1,5 +1,8 @@
-package com.farimarwat.loom.utils
+package com.farimarwat.loom.core.utils
 
+import android.app.Activity
+import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
@@ -24,3 +27,4 @@ actual fun Long.formatAsTime(): String {
         String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
     }
 }
+

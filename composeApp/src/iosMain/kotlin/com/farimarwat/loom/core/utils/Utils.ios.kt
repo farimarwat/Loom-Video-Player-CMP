@@ -1,10 +1,15 @@
-package com.farimarwat.loom.utils
+package com.farimarwat.loom.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import platform.Foundation.NSNumber
+import platform.Foundation.setValue
+import platform.UIKit.UIDevice
+import platform.UIKit.UIInterfaceOrientationLandscapeRight
+import platform.UIKit.UIInterfaceOrientationPortrait
 import platform.UIKit.UIScreen
 
 
@@ -35,3 +40,4 @@ actual fun Long.formatAsTime(): String {
         "${minutes.padTwoDigits()}:${seconds.padTwoDigits()}"
     }
 }
+

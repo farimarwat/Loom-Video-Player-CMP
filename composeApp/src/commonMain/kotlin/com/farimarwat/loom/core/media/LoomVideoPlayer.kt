@@ -7,5 +7,5 @@ import androidx.compose.ui.Modifier
 expect fun LoomVideoPlayer(
     modifier:Modifier,
     playerState: VideoPlayerState,
-    isFullScreen: Boolean
+    onToggleFullScreen:(fullScreen:Boolean)->Unit = {}
 )

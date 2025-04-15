@@ -1,4 +1,4 @@
-package com.farimarwat.loom.utils
+package com.farimarwat.loom.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize

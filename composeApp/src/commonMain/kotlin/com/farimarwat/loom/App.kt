@@ -11,13 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.farimarwat.loom.core.media.LoomVideoPlayer
 import com.farimarwat.loom.core.media.rememberLoopVideoPlayerState
+import com.farimarwat.loom.utils.ScreenUtils
+import com.farimarwat.loom.utils.rememberScreenUtilsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
+        val screenUtils = rememberScreenUtilsState()
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -28,11 +30,11 @@ fun App() {
             }
 
             LoomVideoPlayer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
+                modifier = Modifier,
                 playerState = playerState,
-                isFullScreen = false
+                onToggleFullScreen = {
+                    screenUtils.setLandScape(it)
+                }
             )
         }
     }

@@ -36,8 +36,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.farimarwat.loom.core.media.VideoPlayerState
-import com.farimarwat.loom.utils.formatAsTime
-import com.farimarwat.loom.utils.getPlatformWindowSize
+import com.farimarwat.loom.core.utils.formatAsTime
+import com.farimarwat.loom.core.utils.getPlatformWindowSize
 import loomvideoplayer.composeapp.generated.resources.Res
 import loomvideoplayer.composeapp.generated.resources.ic_fullscreen
 import loomvideoplayer.composeapp.generated.resources.ic_pause
@@ -46,7 +46,8 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MediaControls(
-    state: VideoPlayerState
+    state: VideoPlayerState,
+    onFullScreenClicked:()->Unit={}
 ) {
     var showControls by remember { mutableStateOf(true) }
     BoxWithConstraints(
@@ -149,7 +150,9 @@ fun MediaControls(
                     IconButton(
                         modifier = Modifier
                             .size(24.dp),
-                        onClick = {}
+                        onClick = {
+                            onFullScreenClicked()
+                        }
                     ) {
                         Icon(
                             modifier = Modifier.fillMaxSize(),

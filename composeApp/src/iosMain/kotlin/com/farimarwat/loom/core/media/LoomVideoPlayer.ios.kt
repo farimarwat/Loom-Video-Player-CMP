@@ -17,7 +17,7 @@ import platform.UIKit.UIView
 actual fun LoomVideoPlayer(
     modifier: Modifier,
     playerState: VideoPlayerState,
-    isFullScreen: Boolean
+    onToggleFullScreen:(fullScreen:Boolean)->Unit
 ) {
    Box(
        modifier = Modifier
